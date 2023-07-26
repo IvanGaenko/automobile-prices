@@ -8,6 +8,10 @@ export default async function getCars(search) {
   let id = 0;
   let page = 0;
 
+  function parsingNumber(str) {
+    return parseInt(str.split(" ").join(""), 10);
+  }
+
   async function fetchCars() {
     // const { data } = await axios.get(`https://auto.ria.com/uk/search/
     //   ?indexName=auto,order_auto,newauto_search&year[0].gte=2002
@@ -34,10 +38,14 @@ export default async function getCars(search) {
       const newCars = Array.from(carList).map((car) => {
         id++;
         const name = car.querySelector("span.blue.bold").innerHTML.trim();
-        const year = car.querySelector("a.address").innerHTML.trim().slice(-4);
-        const price = car
-          .querySelector("span.size15 > span.bold.size22.green:first-child")
-          .innerHTML.trim();
+        const year = parsingNumber(
+          car.querySelector("a.address").innerHTML.trim().slice(-4)
+        );
+        const price = parsingNumber(
+          car
+            .querySelector("span.size15 > span.bold.size22.green:first-child")
+            .innerHTML.trim()
+        );
         return { id, name, year, price };
       });
 
@@ -45,7 +53,7 @@ export default async function getCars(search) {
 
       page++;
 
-      if (page < 3) {
+      if (page < 5) {
         await fetchCars();
       }
     }

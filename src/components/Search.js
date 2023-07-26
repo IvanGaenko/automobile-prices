@@ -7,6 +7,7 @@ import { params, regions } from "@/lib/params";
 export default function Search() {
   const {
     setCars,
+    setChartData,
     minPrice,
     setMinPrice,
     maxPrice,
@@ -46,7 +47,7 @@ export default function Search() {
 
   async function searchCars(e) {
     e.preventDefault();
-    setCars([]);
+    setChartData(null);
 
     const parsedMinPrice = parseInt(minPrice, 10);
     const parsedMaxPrice = parseInt(maxPrice, 10);
@@ -90,7 +91,8 @@ export default function Search() {
 
       const data = await response.json();
       console.log("data", data);
-      setCars(data);
+
+      setChartData(data);
     } catch (error) {
       console.error(error);
     }
@@ -100,13 +102,14 @@ export default function Search() {
     <section className="w-full flex justify-center">
       <form
         onSubmit={searchCars}
-        className="flex flex-col text-black max-w-[50%] flex-1"
+        className="flex flex-col text-black bg-gray-500 max-w-[50%] flex-1"
       >
         <input
           onChange={(event) => setMinPrice(event.target.value)}
           placeholder="Min price"
           type="text"
           value={minPrice}
+          className="bg-transparent"
         />
 
         <input
@@ -114,6 +117,7 @@ export default function Search() {
           placeholder="Max price"
           type="text"
           value={maxPrice}
+          className="bg-transparent"
         />
 
         <input
@@ -121,6 +125,7 @@ export default function Search() {
           placeholder="Min year"
           type="text"
           value={minYear}
+          className="bg-transparent"
         />
 
         <input
@@ -128,10 +133,11 @@ export default function Search() {
           placeholder="Max year"
           type="text"
           value={maxYear}
+          className="bg-transparent"
         />
         <div
           ref={dropDownRef}
-          className="w-full h-[30px] bg-slate-300 flex items-center relative"
+          className="w-full h-[30px] bg-transparent flex items-center relative"
           id="1"
           onClick={() => setDropDownOpen((prev) => !prev)}
         >

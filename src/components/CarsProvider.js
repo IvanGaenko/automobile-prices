@@ -11,6 +11,7 @@ export function useCarsContext() {
 
 export default function CarsProvider({ children }) {
   const [cars, setCars] = useState([]);
+  const [chartData, setChartData] = useState(null);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("5000");
   const [minYear, setMinYear] = useState("2005");
@@ -32,7 +33,8 @@ export default function CarsProvider({ children }) {
         );
         const data = await response.json();
         console.log("data", data);
-        setCars(data);
+
+        setChartData(data);
       } catch (error) {
         console.error(error);
       }
@@ -46,6 +48,8 @@ export default function CarsProvider({ children }) {
       value={{
         cars,
         setCars,
+        chartData,
+        setChartData,
         minPrice,
         setMinPrice,
         maxPrice,
@@ -64,3 +68,16 @@ export default function CarsProvider({ children }) {
     </CarsContext.Provider>
   );
 }
+
+/**
+ * {
+ *  lexus: {
+ *      2005: [3400, 5500],
+ *      2007: [3600, 5800],
+ *    },
+ * bmw: {
+ *      2012: [3400, 5500],
+ *      2006: [3600, 5800],
+ *    },
+ * }
+ */

@@ -1,7 +1,9 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+});
 
 import CarsProvider from "@/components/CarsProvider";
 import Search from "@/components/Search";
@@ -16,8 +18,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <CarsProvider>
-          <Search />
-          <section>{children}</section>
+          {/* <Search /> */}
+          <section className="w-full h-full min-h-full flex justify-center items-center">
+            {children}
+          </section>
         </CarsProvider>
       </body>
     </html>
