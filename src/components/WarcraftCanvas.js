@@ -5,24 +5,18 @@ import { useEffect, useRef } from "react";
 import { canvasParams } from "@/lib/params";
 import { drawLine, drawRect, drawText, getRandomColor } from "@/lib/functions";
 
-export default function Canvas({ data, container }) {
-  const {
-    lineHeight,
-    sectionGap,
-    graphOffsetLeft,
-    graphOffsetTop,
-    primaryFontSize,
-  } = canvasParams;
+export default function WarcraftCanvas({ data }) {
+  const { lineHeight, graphOffsetLeft, graphOffsetTop, primaryFontSize } =
+    canvasParams;
   const canvasRef = useRef(null);
   const highlightRef = useRef(null);
 
-  const graphHeight =
-    data.carsCount * lineHeight + data.carData.length * sectionGap;
+  const graphHeight = data.totalCount * lineHeight;
 
   const graphWidthRef = useRef(window.innerWidth * 0.7 + graphOffsetLeft);
 
   const xKoeffRef = useRef(
-    (graphWidthRef.current - graphOffsetLeft) / data.maxPrice
+    (graphWidthRef.current - graphOffsetLeft) / data.maxXValue
   );
   const graphArea = useRef([]);
 
@@ -71,7 +65,7 @@ export default function Canvas({ data, container }) {
         drawLine(context, "white", 3, startX, startY, finishX, finishY);
       }
 
-      const xDimensionPart = data.maxPrice / 5;
+      const xDimensionPart = data.maxXValue / 5;
 
       for (let i = 1; i < 6; i++) {
         const currentDimension = (xDimensionPart * i).toFixed();
@@ -98,68 +92,60 @@ export default function Canvas({ data, container }) {
       }
     }
 
-    function renderCarData() {
+    function renderTierData() {
       graphArea.current = [];
-      let yCoordOfYear = graphOffsetTop;
-      for (let i = 0; i < data.carData.length; i++) {
-        let carsOffset = yCoordOfYear;
-        for (let j = 0; j < data.carData[i].cars.length; j++) {
-          const currentCar = data.carData[i].cars[j];
-          const barWidth = currentCar.price[1] - currentCar.price[0];
-          const barOffsetLeft = currentCar.price[0] * xKoeff + graphOffsetLeft;
-          const barOffsetRight = graphWidth - currentCar.price[1] * xKoeff;
-          const currentColor = getRandomColor();
+      let tiersOffset = graphOffsetTop;
+      const colors = [];
+      for (let i = 0; i < data.tierData.length; i++) {
+        const currentTier = data.tierData[i];
+        const { dungeonsStats } = currentTier;
 
-          drawText(
-            context,
-            graphOffsetLeft + 5,
-            carsOffset + primaryFontSize,
-            currentCar.name
-          );
+        // draw rect
+        let checkpoint = graphOffsetLeft + 2;
+        for (let j = 0; j < dungeonsStats.length; j++) {
+          const barWidth = dungeonsStats[j].count * xKoeff - 1;
+          const barOffsetLeft = checkpoint - graphOffsetLeft;
+          const barOffsetRight = graphWidth - barWidth - barOffsetLeft;
+
+          const currentColor = getRandomColor();
+          if (colors.length <= dungeonsStats.length) colors.push(currentColor);
 
           drawRect(
             context,
-            barOffsetLeft,
-            carsOffset,
-            barWidth === 0 ? -lineHeight / 4 : barWidth * xKoeff,
+            checkpoint,
+            tiersOffset,
+            barWidth,
             lineHeight - 2,
-            currentColor
+            colors[j]
           );
 
           graphArea.current.push({
-            start: carsOffset,
-            end: carsOffset + lineHeight,
-            offsetLeft: barOffsetLeft - graphOffsetLeft,
+            start: tiersOffset,
+            end: tiersOffset + lineHeight,
+            offsetLeft: barOffsetLeft,
             offsetRight: barOffsetRight,
-            width: barWidth * xKoeff,
-            data: currentCar,
+            width: barWidth,
+            color: colors[j],
+            data: {
+              name: dungeonsStats[j].name,
+              count: dungeonsStats[j].count,
+              total: currentTier.totalCount,
+              totalWidth: currentTier.totalCount * xKoeff,
+            },
           });
 
-          carsOffset = carsOffset + lineHeight;
+          checkpoint += dungeonsStats[j].count * xKoeff;
         }
 
-        let dY = data.carData[i].cars.length * lineHeight + sectionGap;
-        yCoordOfYear = yCoordOfYear + dY;
-        const yearDimension = context.measureText(data.carData[i].year);
+        // draw name
         drawText(
           context,
-          graphOffsetLeft - yearDimension.width - 5,
-          yCoordOfYear - dY / 2 + sectionGap / 2,
-          data.carData[i].year
+          graphOffsetLeft + 5,
+          tiersOffset + primaryFontSize,
+          currentTier.name
         );
 
-        if (i !== data.carData.length - 1) {
-          drawLine(
-            context,
-            "white",
-            1,
-            graphOffsetLeft,
-            yCoordOfYear - sectionGap / 2,
-            graphOffsetLeft + graphWidth,
-            yCoordOfYear - sectionGap / 2,
-            true
-          );
-        }
+        tiersOffset = tiersOffset + lineHeight;
       }
     }
 
@@ -179,13 +165,13 @@ export default function Canvas({ data, container }) {
     context.fillRect(0, 0, width, height);
 
     drawCoordinateSystem();
-    renderCarData();
+    renderTierData();
   }
 
   function onResizeCanvas() {
     graphWidthRef.current = window.innerWidth * 0.7 + graphOffsetLeft;
     xKoeffRef.current =
-      (graphWidthRef.current - graphOffsetLeft) / data.maxPrice;
+      (graphWidthRef.current - graphOffsetLeft) / data.maxXValue;
     canvasInit();
   }
 
@@ -203,60 +189,15 @@ export default function Canvas({ data, container }) {
     const hCanvas = highlightRef.current;
     const hContext = hCanvas.getContext("2d");
 
+    const canvasDimensions = hCanvas.getBoundingClientRect();
+
     const currentLine = graphArea.current.find(
-      (area) =>
-        e.pageY - container.height - container.y * 2 > area.start &&
-        e.pageY - container.height - container.y * 2 < area.end
+      (area) => e.pageY > area.start && e.pageY < area.end
     );
 
     if (currentLine) {
       hContext.clearRect(0, 0, hCanvas.width, hCanvas.height);
 
-      const isOnePrice =
-        currentLine.data.price[0] === currentLine.data.price[1];
-
-      const isOneRace = currentLine.data.race[0] === currentLine.data.race[1];
-
-      const maxPrice = `${isOnePrice ? "Price:" : "Max price:"} ${
-        currentLine.data.price[1]
-      }$`;
-      const minPrice = `${isOnePrice ? "Price:" : "Min price:"} ${
-        currentLine.data.price[0]
-      }$`;
-
-      const maxRace = `${isOneRace ? "Race:" : "Max race:"} ${
-        currentLine.data.race[1]
-      }k.km`;
-      const minRace = `${isOneRace ? "Race:" : "Min race:"} ${
-        currentLine.data.race[0]
-      }k.km`;
-
-      const maxPriceWidth = hContext.measureText(maxPrice).width;
-      const minPriceWidth = hContext.measureText(minPrice).width;
-
-      const maxRaceWidth = hContext.measureText(maxRace).width;
-      const minRaceWidth = hContext.measureText(minRace).width;
-
-      const tooltipWidth =
-        Math.max(maxPriceWidth, minPriceWidth, maxRaceWidth, minRaceWidth) + 10;
-
-      const priceHeight = isOnePrice ? lineHeight : lineHeight * 2;
-      const raceHeight = isOneRace ? lineHeight : lineHeight * 2;
-      const tooltipHeight = priceHeight + raceHeight;
-
-      const tooltipXPosition =
-        currentLine.offsetRight > tooltipWidth
-          ? currentLine.offsetLeft + currentLine.width
-          : currentLine.offsetLeft - tooltipWidth;
-
-      const tooltipYPosition =
-        data.carData.length > 1
-          ? currentLine.start - graphOffsetTop > tooltipHeight
-            ? currentLine.start - graphOffsetTop - tooltipHeight
-            : currentLine.end - graphOffsetTop
-          : currentLine.start - graphOffsetTop;
-
-      // draw Highlight line
       drawRect(
         hContext,
         0,
@@ -264,6 +205,67 @@ export default function Canvas({ data, container }) {
         hCanvas.width,
         lineHeight,
         "rgba(255,255,255,0.5)"
+      );
+
+      drawText(
+        hContext,
+        currentLine.data.totalWidth + 5,
+        currentLine.start - primaryFontSize,
+        currentLine.data.total
+      );
+    }
+
+    const currentBar = graphArea.current.find(
+      (area) =>
+        e.pageX > area.offsetLeft + canvasDimensions.left &&
+        e.pageX < area.offsetLeft + area.width + canvasDimensions.left &&
+        e.pageY > area.start &&
+        e.pageY < area.end
+    );
+
+    if (currentBar) {
+      hContext.clearRect(0, 0, hCanvas.width, hCanvas.height);
+
+      const dungeonData = `${currentBar.data.name} - ${currentBar.data.count} ${
+        currentBar.data.count > 1 ? "players" : "player"
+      }`;
+      const totalData = `Total: ${currentBar.data.total} ${
+        currentBar.data.total > 1 ? "players" : "player"
+      }`;
+
+      const dungeonDataWidth = hContext.measureText(dungeonData).width;
+      const totalDataWidth = hContext.measureText(totalData).width;
+
+      const tooltipWidth = Math.max(dungeonDataWidth, totalDataWidth) + 10;
+      const tooltipHeight = lineHeight * 2;
+
+      const tooltipXPosition =
+        currentBar.offsetRight > tooltipWidth
+          ? currentBar.offsetLeft + currentBar.width
+          : currentBar.offsetLeft - tooltipWidth;
+      const tooltipYPosition =
+        currentBar.start - graphOffsetTop > tooltipHeight
+          ? currentBar.start - graphOffsetTop - tooltipHeight
+          : currentBar.end - graphOffsetTop;
+
+      // draw Highlight line
+      drawRect(
+        hContext,
+        0,
+        currentBar.start - graphOffsetTop,
+        hCanvas.width,
+        lineHeight,
+        "rgba(255,255,255,0.5)"
+      );
+
+      // draw Highlight bar
+      drawRect(
+        hContext,
+        currentBar.offsetLeft,
+        currentBar.start - graphOffsetTop,
+        currentBar.width,
+        lineHeight - 2,
+        currentBar.color
       );
 
       // draw tootlip background
@@ -276,43 +278,21 @@ export default function Canvas({ data, container }) {
         "rgba(100,100,100,0.8)"
       );
 
-      // draw max price
+      // draw dungeon data
       drawText(
         hContext,
         tooltipXPosition + 5,
         tooltipYPosition + primaryFontSize,
-        maxPrice
+        dungeonData
       );
 
-      // draw max race
+      // draw total value
       drawText(
         hContext,
         tooltipXPosition + 5,
-        isOneRace
-          ? tooltipYPosition + primaryFontSize + tooltipHeight / 2
-          : tooltipYPosition + primaryFontSize * 2 + 3,
-        maxRace
+        tooltipYPosition + primaryFontSize + tooltipHeight / 2,
+        totalData
       );
-
-      // draw min price
-      if (!isOnePrice) {
-        drawText(
-          hContext,
-          tooltipXPosition + 5,
-          tooltipYPosition + primaryFontSize + tooltipHeight / 2 - 3,
-          minPrice
-        );
-      }
-
-      // // draw min race
-      if (!isOneRace) {
-        drawText(
-          hContext,
-          tooltipXPosition + 5,
-          tooltipYPosition + primaryFontSize * 2 + tooltipHeight / 2,
-          minRace
-        );
-      }
     }
   };
 

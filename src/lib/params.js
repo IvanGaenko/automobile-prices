@@ -11,32 +11,6 @@ export const params = {
     str: "&region.id[0]=",
   },
 };
-/**
-Киев 10
-Житомир 2
-Сумы 8
-Чернигов 6
-Винница 1
-Кировоград 16
-Полтава 20
-Черкассы 24
-Львов 5
-Волынь 18
-Закарпатье 22
-Ивано-Франковск 15
-Хмельницк 4
-Ровно 9
-Тернополь 3
-Черновцы 25
-Днепр 11
-Харьков 7
-Донецк 13
-Запорожье 14
-Луганск 17
-Херсон 23
-Николаев 19
-Одесса 12
-**/
 
 export const regions = {
   1: "Винница",
@@ -63,4 +37,27 @@ export const regions = {
   23: "Херсон",
   24: "Черкассы",
   25: "Черновцы",
+};
+
+export const canvasParams = {
+  lineHeight: 20,
+  sectionGap: 5,
+  graphOffsetLeft: 40,
+  graphOffsetTop: 30,
+  primaryFontSize: 20 * 0.75,
+};
+
+export const footerParams = {
+  cars: {
+    name: "auto.ria.com",
+    src: "https://auto.ria.com/uk/",
+    profile: "Cars Purchase",
+    path: "/cars",
+  },
+  warcraft: {
+    name: "felsong.gg",
+    src: "https://felsong.gg/en/challenge/index",
+    profile: "Warcraft Legion",
+    path: "/warcraft",
+  },
 };
