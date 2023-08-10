@@ -8,9 +8,10 @@ export default async function getClassTier() {
       "--single-process",
       "--no-zygote",
     ],
+    headless: true,
     executablePath:
       process.env.NODE_ENV === "production"
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
+        ? "/usr/bin/chromium-browser"
         : puppeteer.executablePath(),
   });
 
