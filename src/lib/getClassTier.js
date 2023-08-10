@@ -1,13 +1,8 @@
-// import puppeteer from "puppeteer";
-const chromium = require("chrome-aws-lambda");
+import puppeteer from "puppeteer";
 
 export default async function getClassTier() {
-  const browser = await chromium.puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: chromium.headless,
-    ignoreHTTPSErrors: true,
+  const browser = await puppeteer.launch({
+    headless: "new",
   });
 
   const page = await browser.newPage();
