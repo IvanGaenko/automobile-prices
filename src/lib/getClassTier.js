@@ -11,7 +11,7 @@ export default async function getClassTier() {
     headless: true,
     executablePath:
       process.env.NODE_ENV === "production"
-        ? "/usr/bin/chromium-browser"
+        ? "/usr/bin/google-chrome-stable"
         : puppeteer.executablePath(),
   });
 
