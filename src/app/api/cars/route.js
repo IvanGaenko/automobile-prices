@@ -3,12 +3,12 @@ import getCars from "@/lib/getCars";
 export async function GET(request) {
   const { search } = new URL(request.url);
   console.log("start", search);
-  // const data = await getCars(search.slice(1));
-  // console.log("data", data);
+  const data2 = await getCars(search.slice(1));
+  console.log("data", data2);
 
   const data = [
     {
-      name: "Lada 1118 Калина",
+      name: "Lada 1118",
       year: 2007,
       price: 2200,
       race: 326,
