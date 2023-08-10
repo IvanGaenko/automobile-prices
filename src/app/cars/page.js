@@ -39,7 +39,8 @@ export default function Cars() {
     async function searchData() {
       setIsLoading(true);
 
-      const response = await fetch(`/api${pathname}${options}`);
+      // const response = await fetch(`/api${pathname}${options}`);
+      const response = await fetch(`/api/cars${options}`);
 
       const data = await response.json();
 
