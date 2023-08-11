@@ -2,22 +2,22 @@ import puppeteer from "puppeteer";
 
 export default async function getClassTier() {
   const browser = await puppeteer.launch({
-    args: [
-      "--disable-setuid-sandbox",
-      "--no-sandbox",
-      "--single-process",
-      "--no-zygote",
-    ],
+    // args: [
+    //   "--disable-setuid-sandbox",
+    //   "--no-sandbox",
+    //   "--single-process",
+    //   "--no-zygote",
+    // ],
     headless: true,
-    executablePath:
-      process.env.NODE_ENV === "production"
-        ? "/usr/bin/google-chrome-stable"
-        : puppeteer.executablePath(),
+    // executablePath:
+    //   process.env.NODE_ENV === "production"
+    //     ? "/usr/bin/google-chrome-stable"
+    //     : puppeteer.executablePath(),
   });
 
   const page = await browser.newPage();
 
-  await page.goto("https://felsong.gg/en/challenge/index", {
+  await page.goto("https://firestorm-servers.com/ru/challenge/index", {
     waitUntil: "domcontentloaded",
   });
 
@@ -59,7 +59,7 @@ export default async function getClassTier() {
       // https://felsong.gg/en/challenge/challenge/1456/197
       await page.waitForResponse(
         (res) => {
-          const neededUrl = `https://felsong.gg/en/challenge/${currentDungeon.ajax}`;
+          const neededUrl = `https://firestorm-servers.com/ru/challenge/${currentDungeon.ajax}`;
           return res.url() === neededUrl;
         },
         { timeout: 90_000 }
