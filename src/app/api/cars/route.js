@@ -2,20 +2,8 @@ import getCars from "@/lib/getCars";
 
 export async function GET(request) {
   const { search } = new URL(request.url);
-  console.log("start", search);
-  const data2 = await getCars(search.slice(1));
-  console.log("data", data2);
 
-  const data = [
-    {
-      name: "Lada 1118",
-      year: 2007,
-      price: 2200,
-      race: 326,
-    },
-    { name: "Sens", year: 2014, price: 4499, race: 51 },
-    { name: "Lada 21099", year: 2006, price: 1780, race: 178 },
-  ];
+  const data = await getCars(search.slice(1));
 
   const carData = [];
   let maxPrice = 0;

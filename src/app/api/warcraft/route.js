@@ -1,7 +1,8 @@
-import getClassTier from "@/lib/getClassTier";
+// import getClassTier from "@/lib/getClassTier";
 
 export async function GET() {
-  const data = await getClassTier();
+  // const data = await getClassTier();
+  const data = [];
 
   const tierData = Object.entries(data).map((tier) => {
     const name = tier[0];
