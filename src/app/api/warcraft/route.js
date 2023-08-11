@@ -2,7 +2,35 @@
 
 export async function GET() {
   // const data = await getClassTier();
-  const data = [];
+  // console.log("data", data);
+  const data = {
+    monk: [
+      {
+        "Iron Docks": 5,
+        "Grimrail Depot": 4,
+        "Каражан (lower)": 8,
+        "Каражан (upper)": 5,
+        "Operation: Mechagon (Свалка)": 4,
+        "Operation: Mechagon (Мастерская)": 7,
+        "Tazavesh<br> (Улицы чудес)": 6,
+        "Tazavesh<br> (Гамбит Со'леи)": 4,
+      },
+      43,
+    ],
+    demonhunter: [
+      {
+        "Iron Docks": 2,
+        "Grimrail Depot": 7,
+        "Каражан (lower)": 6,
+        "Каражан (upper)": 9,
+        "Operation: Mechagon (Свалка)": 1,
+        "Operation: Mechagon (Мастерская)": 5,
+        "Tazavesh<br> (Улицы чудес)": 8,
+        "Tazavesh<br> (Гамбит Со'леи)": 6,
+      },
+      44,
+    ],
+  };
 
   const tierData = Object.entries(data).map((tier) => {
     const name = tier[0];
