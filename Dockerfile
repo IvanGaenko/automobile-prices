@@ -3,7 +3,7 @@ FROM node:18-alpine AS base
 FROM base AS deps
 
 RUN apk add --no-cache libc6-compat
-RUN apk add --nocache udev ttf-freefont chromium git
+RUN apk add --no-cache udev ttf-freefont chromium git
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROMIUM_PATH /usr/bin/chromium-browser
