@@ -1,8 +1,8 @@
 // import getClassTier from "@/lib/getClassTier";
 
 export async function GET() {
-  // const data = await getClassTier();
-  // console.log("data", data);
+  const dataTier = await getClassTier();
+  console.log("dataTier", dataTier);
   const data = {
     monk: [
       {
