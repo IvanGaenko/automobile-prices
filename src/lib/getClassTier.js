@@ -11,7 +11,7 @@ export default async function getClassTier() {
     headless: true,
     executablePath:
       process.env.NODE_ENV === "production"
-        ? process.env.CHROMIUM_PATH
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
         : puppeteer.executablePath(),
   });
 

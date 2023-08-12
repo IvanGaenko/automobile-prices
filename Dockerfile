@@ -3,10 +3,11 @@ FROM node:18-alpine AS base
 FROM base AS deps
 
 RUN apk add --no-cache libc6-compat
-RUN apk add --no-cache udev ttf-freefont chromium git
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV CHROMIUM_PATH /usr/bin/chromium-browser
+FROM ghcr.io/puppeteer/puppeteer:21.0.2
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 WORKDIR /app
 
