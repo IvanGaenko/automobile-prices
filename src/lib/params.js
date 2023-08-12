@@ -55,9 +55,9 @@ export const footerParams = {
     path: "/cars",
   },
   warcraft: {
-    name: "felsong.gg",
-    src: "https://felsong.gg/en/challenge/index",
-    profile: "Warcraft Legion",
+    name: "firestorm-servers.com",
+    src: "https://firestorm-servers.com/en/challenge/index",
+    profile: "Warcraft Shadowlands",
     path: "/warcraft",
   },
 };

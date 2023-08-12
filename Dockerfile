@@ -1,13 +1,11 @@
-FROM node:18-alpine AS base
-
-FROM base AS deps
-
-RUN apk add --no-cache libc6-compat
-
-FROM ghcr.io/puppeteer/puppeteer:21.0.2
+FROM ghcr.io/puppeteer/puppeteer:21.0.2 AS base
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+
+USER root
+
+FROM base AS deps
 
 WORKDIR /app
 
@@ -22,6 +20,7 @@ RUN \
 
 FROM base AS builder
 WORKDIR /app
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
