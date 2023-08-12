@@ -1,4 +1,4 @@
-// import getClassTier from "@/lib/getClassTier";
+import getClassTier from "@/lib/getClassTier";
 
 export async function GET() {
   const dataTier = await getClassTier();
