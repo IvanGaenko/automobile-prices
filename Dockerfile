@@ -7,6 +7,8 @@ USER root
 
 FROM base AS deps
 
+RUN apt-get update && apt-get install libc6 -y && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./
