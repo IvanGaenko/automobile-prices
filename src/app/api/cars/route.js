@@ -1,9 +1,12 @@
 import getCars from "@/lib/getCars";
 
 export async function GET(request) {
-  const { search } = new URL(request.url);
+  // const { search } = new URL(request.url);
 
-  const data = await getCars(search.slice(1));
+  // const data = await getCars(search.slice(1));
+  const data = await getCars(
+    "price.USD.lte=5000&year[0].gte=2005&region.id[0]=7"
+  );
 
   const carData = [];
   let maxPrice = 0;

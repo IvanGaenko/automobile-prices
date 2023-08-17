@@ -58,14 +58,15 @@ export default function Cars() {
     async function searchData() {
       setIsLoading(true);
 
-      const response = await fetch(`/api${pathname}${optionsList.join("")}`);
+      // const response = await fetch(`/api${pathname}${optionsList.join("")}`);
+      const response = await fetch(`/api${pathname}`);
       const data = await response.json();
 
       setChartData(data);
       setIsLoading(false);
     }
 
-    // searchData();
+    searchData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
