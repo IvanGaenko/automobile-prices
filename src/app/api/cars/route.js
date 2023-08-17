@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 
 import getCars from "@/lib/getCars";
 
-export async function POST(request) {
-  const { search } = await request.json();
-
-  // const data = await getCars(search);
+export async function GET() {
   const data = await getCars(
     "price.USD.lte=5000&year[0].gte=2005&region.id[0]=7"
   );

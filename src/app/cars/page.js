@@ -82,10 +82,7 @@ export default function Cars() {
       setIsLoading(true);
 
       // const response = await fetch(`/api${pathname}${optionsList.join("")}`);
-      const response = await fetch(`/api${pathname}`, {
-        method: "POST",
-        body: JSON.stringify({ search: optionsList.join("") }),
-      });
+      const response = await fetch(`/api${pathname}`);
 
       const data = await response.json();
 
