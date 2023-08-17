@@ -65,7 +65,7 @@ export default function Cars() {
       setIsLoading(false);
     }
 
-    searchData();
+    // searchData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
