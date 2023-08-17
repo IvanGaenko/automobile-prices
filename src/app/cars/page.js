@@ -58,8 +58,7 @@ export default function Cars() {
     async function searchData() {
       setIsLoading(true);
 
-      // const response = await fetch(`/api${pathname}${optionsList.join("")}`);
-      const response = await fetch(`/api${pathname}`);
+      const response = await fetch(`/api${pathname}${optionsList.join("")}`);
       const data = await response.json();
 
       setChartData(data);
