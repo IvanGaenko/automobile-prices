@@ -1,17 +1,11 @@
+import { NextResponse } from "next/server";
+
 import getCars from "@/lib/getCars";
 
-export async function GET(request) {
-  // const search = request.nextUrl.search.slice(1);
-  const url = new URL(request.url);
+export async function POST(request) {
+  const { search } = await request.json();
 
-  let searchParams = "";
-  for (const [key, value] of url.searchParams) {
-    const prefix = searchParams.length === 0 ? "" : "&";
-    searchParams += `${prefix}${key}=${value}`;
-  }
-
-  // const data = await getCars(search);
-  const data = await getCars(searchParams);
+  const data = await getCars(search);
 
   const carData = [];
   let maxPrice = 0;
@@ -69,14 +63,5 @@ export async function GET(request) {
     carData[i].cars.sort((a, b) => (a.price[1] > b.price[1] ? 1 : -1));
   }
 
-  return new Response(JSON.stringify({ carData, maxPrice, carsCount }), {
-    headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "s-maxage=300, stale-while-revalidate",
-    },
-    status: 200,
-    statusText: "OK",
-  });
+  return NextResponse.json({ carData, maxPrice, carsCount });
 }
-
-// export default routeCar;
