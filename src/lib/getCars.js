@@ -12,7 +12,7 @@ export default async function getCars(search) {
 
   async function fetchCars() {
     const { data } = await axios.get(
-      `https://auto.ria.com/uk/search/?indexName=auto,order_auto,newauto_search&categories.main.id=1&price.currency=1&abroad.not=0&custom.not=1&size=${pageSize}&damage.not=1&sort[0].order=dates.created.desc&page=${webPage}${search}`
+      `https://auto.ria.com/uk/search/?indexName=auto,order_auto,newauto_search&categories.main.id=1&price.currency=1&abroad.not=0&custom.not=1&size=${pageSize}&damage.not=1&sort[0].order=dates.created.desc&page=${webPage}&${search}`
     );
 
     const dom = new JSDOM(data);

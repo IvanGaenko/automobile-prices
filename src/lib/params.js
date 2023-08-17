@@ -1,14 +1,14 @@
 export const params = {
   price: {
-    min: "&price.USD.gte=",
-    max: "&price.USD.lte=",
+    min: "price.USD.gte=",
+    max: "price.USD.lte=",
   },
   year: {
-    min: "&year[0].gte=",
-    max: "&year[0].lte=",
+    min: "year[0].gte=",
+    max: "year[0].lte=",
   },
   region: {
-    str: "&region.id[0]=",
+    str: "region.id[0]=",
   },
 };
 

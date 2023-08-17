@@ -29,17 +29,36 @@ export default function Cars() {
   const pathname = usePathname();
   const { cars, warcraft } = footerParams;
 
-  const options = `?${minPrice ? params.price.min + minPrice : ""}${
-    maxPrice ? params.price.max + maxPrice : ""
-  }${minYear ? params.year.min + minYear : ""}${
-    maxYear ? params.year.max + maxYear : ""
-  }${region ? params.region.str + region : ""}`;
+  const optionsList = [];
+
+  if (minPrice)
+    optionsList.push(
+      `${optionsList.length === 0 ? "?" : "&"}${params.price.min + minPrice}`
+    );
+  if (maxPrice)
+    optionsList.push(
+      `${optionsList.length === 0 ? "?" : "&"}${params.price.max + maxPrice}`
+    );
+
+  if (minYear)
+    optionsList.push(
+      `${optionsList.length === 0 ? "?" : "&"}${params.year.min + minYear}`
+    );
+  if (maxYear)
+    optionsList.push(
+      `${optionsList.length === 0 ? "?" : "&"}${params.year.max + maxYear}`
+    );
+
+  if (region)
+    optionsList.push(
+      `${optionsList.length === 0 ? "?" : "&"}${params.region.str + region}`
+    );
 
   useEffect(() => {
     async function searchData() {
       setIsLoading(true);
 
-      const response = await fetch(`/api${pathname}${options}`);
+      const response = await fetch(`/api${pathname}${optionsList.join("")}`);
       const data = await response.json();
 
       setChartData(data);
