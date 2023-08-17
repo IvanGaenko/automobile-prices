@@ -2,10 +2,13 @@ import { NextResponse } from "next/server";
 
 import getCars from "@/lib/getCars";
 
-export async function GET() {
-  const data = await getCars(
-    "price.USD.lte=5000&year[0].gte=2005&region.id[0]=7"
-  );
+export async function POST(request) {
+  const json = await request.json();
+  console.log("json", json);
+  // const data = await getCars(
+  //   "price.USD.lte=5000&year[0].gte=2005&region.id[0]=7"
+  // );
+  const data = await getCars(json.search);
 
   const carData = [];
   let maxPrice = 0;
@@ -63,5 +66,9 @@ export async function GET() {
     carData[i].cars.sort((a, b) => (a.price[1] > b.price[1] ? 1 : -1));
   }
 
-  return NextResponse.json({ carData, maxPrice, carsCount });
+  // return NextResponse.json({ carData, maxPrice, carsCount });
+  return new NextResponse(JSON.stringify({ carData, maxPrice, carsCount }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }
