@@ -34,25 +34,25 @@ export default function Cars() {
 
   if (minPrice)
     optionsList.push(
-      `${optionsList.length === 0 ? "" : "&"}${params.price.min + minPrice}`
+      `${optionsList.length === 0 ? "?" : "&"}${params.price.min + minPrice}`
     );
   if (maxPrice)
     optionsList.push(
-      `${optionsList.length === 0 ? "" : "&"}${params.price.max + maxPrice}`
+      `${optionsList.length === 0 ? "?" : "&"}${params.price.max + maxPrice}`
     );
 
   if (minYear)
     optionsList.push(
-      `${optionsList.length === 0 ? "" : "&"}${params.year.min + minYear}`
+      `${optionsList.length === 0 ? "?" : "&"}${params.year.min + minYear}`
     );
   if (maxYear)
     optionsList.push(
-      `${optionsList.length === 0 ? "" : "&"}${params.year.max + maxYear}`
+      `${optionsList.length === 0 ? "?" : "&"}${params.year.max + maxYear}`
     );
 
   if (region)
     optionsList.push(
-      `${optionsList.length === 0 ? "" : "&"}${params.region.str + region}`
+      `${optionsList.length === 0 ? "?" : "&"}${params.region.str + region}`
     );
 
   useEffect(() => {
@@ -66,8 +66,8 @@ export default function Cars() {
           body: JSON.stringify({ search: optionsList.join("") }),
         };
 
-        // const response = await fetch(`/api${pathname}${optionsList.join("")}`);
-        const response = await fetch(`/api/cars`, requestParams);
+        const response = await fetch(`/api/cars${optionsList.join("")}`);
+        // const response = await fetch(`/api/cars`, requestParams);
 
         const data = await response.json();
 

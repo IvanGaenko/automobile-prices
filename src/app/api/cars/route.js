@@ -2,18 +2,22 @@ import { NextResponse } from "next/server";
 
 import getCars from "@/lib/getCars";
 
-export async function POST(request) {
+export async function GET(request, response) {
   const carData = [];
   let maxPrice = 0;
   let carsCount = 0;
 
   try {
-    const json = await request.json();
+    console.log(
+      "request.nextUrl.searchParams",
+      request.nextUrl.search.slice(1)
+    );
+    // const json = await request.json();
     // const data = await getCars(
     //   "price.USD.lte=5000&year[0].gte=2005&region.id[0]=7"
     // );
 
-    const data = await getCars(json.search);
+    const data = await getCars(request.nextUrl.search.slice(1));
     // const data = await getCars(search);
 
     for (let i = 0; i < data.length; i++) {
@@ -69,10 +73,11 @@ export async function POST(request) {
     }
 
     // return NextResponse.json({ carData, maxPrice, carsCount });
-    return new NextResponse(JSON.stringify({ carData, maxPrice, carsCount }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    // return new NextResponse(JSON.stringify({ carData, maxPrice, carsCount }), {
+    //   status: 200,
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    return NextResponse.json({ carData, maxPrice, carsCount });
   } catch (error) {
     console.log("error", error.message);
     return new NextResponse(JSON.stringify({ error: error.message }), {
