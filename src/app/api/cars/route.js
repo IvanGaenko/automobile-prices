@@ -2,9 +2,13 @@ import { NextResponse } from "next/server";
 
 import getCars from "@/lib/getCars";
 
+export async function GET() {
+  return new NextResponse("Hello, Next.js!");
+}
+
 export async function POST(request) {
   const json = await request.json();
-  console.log("json", json);
+  console.log("json", json.search.length);
   // const data = await getCars(
   //   "price.USD.lte=5000&year[0].gte=2005&region.id[0]=7"
   // );

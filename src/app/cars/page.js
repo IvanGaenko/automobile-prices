@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, use } from "react";
 
 import { useCarsContext } from "@/components/CarsProvider";
 import { params, footerParams } from "@/lib/params";
@@ -84,10 +84,10 @@ export default function Cars() {
       // const response = await fetch(`/api${pathname}${optionsList.join("")}`);
       const response = await fetch(`/api${pathname}`, {
         method: "POST",
-        body: JSON.stringify({ search: optionsList.join("") }),
         headers: {
-          "Content-Type": "application/json",
+          "Content-type": "application/json",
         },
+        body: JSON.stringify({ search: optionsList.join("") }),
       });
 
       const data = await response.json();
