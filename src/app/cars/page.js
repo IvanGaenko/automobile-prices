@@ -59,23 +59,28 @@ export default function Cars() {
     async function searchData() {
       setIsLoading(true);
 
-      const requestParams = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ search: optionsList.join("") }),
-      };
+      try {
+        const requestParams = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ search: optionsList.join("") }),
+        };
 
-      // const response = await fetch(`/api${pathname}${optionsList.join("")}`);
-      const response = await fetch(`/api/cars`, requestParams);
+        // const response = await fetch(`/api${pathname}${optionsList.join("")}`);
+        const response = await fetch(`/api/cars`, requestParams);
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (data.error) {
-        setErrorMessage(data.error);
-      } else {
-        setChartData(data);
+        if (data.error) {
+          setErrorMessage(data.error);
+        } else {
+          setChartData(data);
+        }
+      } catch (error) {
+        setErrorMessage(error.message);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
 
     searchData();

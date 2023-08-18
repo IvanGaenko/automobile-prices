@@ -3,13 +3,12 @@ import { NextResponse } from "next/server";
 import getCars from "@/lib/getCars";
 
 export async function POST(request) {
-  const json = await request.json();
-
   const carData = [];
   let maxPrice = 0;
   let carsCount = 0;
 
   try {
+    const json = await request.json();
     // const data = await getCars(
     //   "price.USD.lte=5000&year[0].gte=2005&region.id[0]=7"
     // );
