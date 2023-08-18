@@ -16,9 +16,11 @@ export async function GET(request, response) {
     // const data = await getCars(
     //   "price.USD.lte=5000&year[0].gte=2005&region.id[0]=7"
     // );
-
+    // price.USD.lte=5000&year%5B0%5D.gte=2005&region.id%5B0%5D=7
     const data = await getCars(request.nextUrl.search.slice(1));
     // const data = await getCars(search);
+
+    console.log("data", data.length);
 
     for (let i = 0; i < data.length; i++) {
       if (maxPrice < data[i].price) maxPrice = data[i].price;
@@ -77,6 +79,12 @@ export async function GET(request, response) {
     //   status: 200,
     //   headers: { "Content-Type": "application/json" },
     // });
+
+    console.log("{ carData, maxPrice, carsCount }", {
+      carData,
+      maxPrice,
+      carsCount,
+    });
     return NextResponse.json({ carData, maxPrice, carsCount });
   } catch (error) {
     console.log("error", error.message);
