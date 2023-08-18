@@ -21,6 +21,8 @@ export default function Cars() {
     region,
     chartData,
     setChartData,
+    errorMessage,
+    setErrorMessage,
     isLoading,
     setIsLoading,
     searchContainer,
@@ -68,7 +70,11 @@ export default function Cars() {
 
       const data = await response.json();
 
-      setChartData(data);
+      if (data.error) {
+        setErrorMessage(data.error);
+      } else {
+        setChartData(data);
+      }
       setIsLoading(false);
     }
 
@@ -85,7 +91,7 @@ export default function Cars() {
           {chartData && chartData.carData.length > 0 ? (
             <Canvas data={chartData} container={searchContainer} />
           ) : (
-            <EmptyContent />
+            <EmptyContent errorMessage={errorMessage} />
           )}
         </div>
       )}

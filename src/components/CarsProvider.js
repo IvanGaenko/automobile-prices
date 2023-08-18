@@ -13,6 +13,7 @@ export default function CarsProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [chartData, setChartData] = useState(null);
   const [rankingData, setRankingData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("5000");
   const [minYear, setMinYear] = useState("2005");
@@ -32,6 +33,8 @@ export default function CarsProvider({ children }) {
         setChartData,
         rankingData,
         setRankingData,
+        errorMessage,
+        setErrorMessage,
         minPrice,
         setMinPrice,
         maxPrice,

@@ -1,5 +1,9 @@
 "use client";
 
-export default function EmptyContent() {
-  return <div>No data on such criterias.</div>;
+export default function EmptyContent({ errorMessage }) {
+  return errorMessage ? (
+    <div>{errorMessage}</div>
+  ) : (
+    <div>No data on such criterias.</div>
+  );
 }
