@@ -2,25 +2,17 @@ import { NextResponse } from "next/server";
 
 import getCars from "@/lib/getCars";
 
-export async function GET(request, response) {
+export async function GET(request) {
   const carData = [];
   let maxPrice = 0;
   let carsCount = 0;
 
-  try {
-    console.log(
-      "request.nextUrl.searchParams",
-      request.nextUrl.search.slice(1)
-    );
-    // const json = await request.json();
-    // const data = await getCars(
-    //   "price.USD.lte=5000&year[0].gte=2005&region.id[0]=7"
-    // );
-    // price.USD.lte=5000&year%5B0%5D.gte=2005&region.id%5B0%5D=7
-    const data = await getCars(request.nextUrl.search.slice(1));
-    // const data = await getCars(search);
+  const searchOptions = request.nextUrl;
+  const search =
+    searchOptions.search.length > 0 ? searchOptions.search.slice(1) : "";
 
-    console.log("data", data.length);
+  try {
+    const data = await getCars(search);
 
     for (let i = 0; i < data.length; i++) {
       if (maxPrice < data[i].price) maxPrice = data[i].price;
@@ -74,20 +66,11 @@ export async function GET(request, response) {
       carData[i].cars.sort((a, b) => (a.price[1] > b.price[1] ? 1 : -1));
     }
 
-    // return NextResponse.json({ carData, maxPrice, carsCount });
-    // return new NextResponse(JSON.stringify({ carData, maxPrice, carsCount }), {
-    //   status: 200,
-    //   headers: { "Content-Type": "application/json" },
-    // });
-
-    console.log("{ carData, maxPrice, carsCount }", {
-      carData,
-      maxPrice,
-      carsCount,
+    return new NextResponse(JSON.stringify({ carData, maxPrice, carsCount }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
     });
-    return NextResponse.json({ carData, maxPrice, carsCount });
   } catch (error) {
-    console.log("error", error.message);
     return new NextResponse(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

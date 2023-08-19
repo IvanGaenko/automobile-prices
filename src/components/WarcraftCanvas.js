@@ -3,13 +3,15 @@
 import { useEffect, useRef } from "react";
 
 import { canvasParams } from "@/lib/params";
-import { drawLine, drawRect, drawText, getRandomColor } from "@/lib/functions";
+import { drawLine, drawRect, drawText } from "@/lib/functions";
+import getColors from "@/lib/getColors";
 
 export default function WarcraftCanvas({ data }) {
   const { lineHeight, graphOffsetLeft, graphOffsetTop, primaryFontSize } =
     canvasParams;
   const canvasRef = useRef(null);
   const highlightRef = useRef(null);
+  const colorsRef = useRef(null);
 
   const graphHeight = data.totalCount * lineHeight;
 
@@ -95,7 +97,7 @@ export default function WarcraftCanvas({ data }) {
     function renderTierData() {
       graphArea.current = [];
       let tiersOffset = graphOffsetTop;
-      const colors = [];
+
       for (let i = 0; i < data.tierData.length; i++) {
         const currentTier = data.tierData[i];
         const { dungeonsStats } = currentTier;
@@ -107,16 +109,13 @@ export default function WarcraftCanvas({ data }) {
           const barOffsetLeft = checkpoint - graphOffsetLeft;
           const barOffsetRight = graphWidth - barWidth - barOffsetLeft;
 
-          const currentColor = getRandomColor();
-          if (colors.length <= dungeonsStats.length) colors.push(currentColor);
-
           drawRect(
             context,
             checkpoint,
             tiersOffset,
             barWidth,
             lineHeight - 2,
-            colors[j]
+            colorsRef.current[j]
           );
 
           graphArea.current.push({
@@ -125,7 +124,7 @@ export default function WarcraftCanvas({ data }) {
             offsetLeft: barOffsetLeft,
             offsetRight: barOffsetRight,
             width: barWidth,
-            color: colors[j],
+            color: colorsRef.current[j],
             data: {
               name: dungeonsStats[j].name,
               count: dungeonsStats[j].count,
@@ -174,6 +173,10 @@ export default function WarcraftCanvas({ data }) {
       (graphWidthRef.current - graphOffsetLeft) / data.maxXValue;
     canvasInit();
   }
+
+  useEffect(() => {
+    colorsRef.current = getColors(data.tierData[0]?.dungeonsStats?.length);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     canvasInit();

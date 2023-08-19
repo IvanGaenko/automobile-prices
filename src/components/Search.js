@@ -2,11 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { useCarsContext } from "./CarsProvider";
-import { params, regions } from "@/lib/params";
+import { regions } from "@/lib/params";
+import getOptionsString from "@/lib/getOptionsString";
 
 export default function Search() {
   const {
-    setCars,
     setChartData,
     setIsLoading,
     minPrice,
@@ -19,6 +19,7 @@ export default function Search() {
     setMaxYear,
     region,
     setRegion,
+    setErrorMessage,
     dropDownOpen,
     setDropDownOpen,
     setSearchContainer,
@@ -89,23 +90,28 @@ export default function Search() {
       setMaxYear(parsedMaxYear);
     }
 
+    const options = getOptionsString({
+      minPrice: parsedMinPrice,
+      maxPrice: parsedMaxPrice,
+      minYear: parsedMinYear,
+      maxYear: parsedMaxYear,
+      region,
+    });
+
     try {
-      const response = await fetch(
-        `/api/cars?indexName=auto,order_auto,newauto_search${
-          parsedMinPrice ? params.price.min + parsedMinPrice : ""
-        }${parsedMaxPrice ? params.price.max + parsedMaxPrice : ""}${
-          parsedMinYear ? params.year.min + parsedMinYear : ""
-        }${parsedMaxYear ? params.year.max + parsedMaxYear : ""}${
-          region ? params.region.str + region : ""
-        }`
-      );
+      const response = await fetch(`/api/cars?${options}`);
 
       const data = await response.json();
 
-      setChartData(data);
-      setIsLoading(false);
+      if (data.error) {
+        setErrorMessage(data.error);
+      } else {
+        setChartData(data);
+      }
     } catch (error) {
-      console.error(error);
+      setErrorMessage(error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 

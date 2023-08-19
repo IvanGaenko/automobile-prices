@@ -1,10 +1,10 @@
 "use client";
 
-// import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 import { useCarsContext } from "@/components/CarsProvider";
-import { params, footerParams } from "@/lib/params";
+import { footerParams } from "@/lib/params";
+import getOptionsString from "@/lib/getOptionsString";
 
 import Search from "@/components/Search";
 import Canvas from "@/components/Canvas";
@@ -30,44 +30,20 @@ export default function Cars() {
 
   const { cars, warcraft } = footerParams;
 
-  const optionsList = [];
-
-  if (minPrice)
-    optionsList.push(
-      `${optionsList.length === 0 ? "?" : "&"}${params.price.min + minPrice}`
-    );
-  if (maxPrice)
-    optionsList.push(
-      `${optionsList.length === 0 ? "?" : "&"}${params.price.max + maxPrice}`
-    );
-
-  if (minYear)
-    optionsList.push(
-      `${optionsList.length === 0 ? "?" : "&"}${params.year.min + minYear}`
-    );
-  if (maxYear)
-    optionsList.push(
-      `${optionsList.length === 0 ? "?" : "&"}${params.year.max + maxYear}`
-    );
-
-  if (region)
-    optionsList.push(
-      `${optionsList.length === 0 ? "?" : "&"}${params.region.str + region}`
-    );
+  const options = getOptionsString({
+    minPrice,
+    maxPrice,
+    minYear,
+    maxYear,
+    region,
+  });
 
   useEffect(() => {
     async function searchData() {
       setIsLoading(true);
 
       try {
-        const requestParams = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ search: optionsList.join("") }),
-        };
-
-        const response = await fetch(`/api/cars${optionsList.join("")}`);
-        // const response = await fetch(`/api/cars`, requestParams);
+        const response = await fetch(`/api/cars?${options}`);
 
         const data = await response.json();
 

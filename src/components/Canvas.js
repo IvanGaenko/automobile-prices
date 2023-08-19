@@ -3,7 +3,8 @@
 import { useEffect, useRef } from "react";
 
 import { canvasParams } from "@/lib/params";
-import { drawLine, drawRect, drawText, getRandomColor } from "@/lib/functions";
+import { drawLine, drawRect, drawText } from "@/lib/functions";
+import getColors from "@/lib/getColors";
 
 export default function Canvas({ data, container }) {
   const {
@@ -15,6 +16,7 @@ export default function Canvas({ data, container }) {
   } = canvasParams;
   const canvasRef = useRef(null);
   const highlightRef = useRef(null);
+  const colorsRef = useRef(null);
 
   const graphHeight =
     data.carsCount * lineHeight + data.carData.length * sectionGap;
@@ -108,7 +110,7 @@ export default function Canvas({ data, container }) {
           const barWidth = currentCar.price[1] - currentCar.price[0];
           const barOffsetLeft = currentCar.price[0] * xKoeff + graphOffsetLeft;
           const barOffsetRight = graphWidth - currentCar.price[1] * xKoeff;
-          const currentColor = getRandomColor();
+          const currentColor = colorsRef.current[j];
 
           drawText(
             context,
@@ -188,6 +190,10 @@ export default function Canvas({ data, container }) {
       (graphWidthRef.current - graphOffsetLeft) / data.maxPrice;
     canvasInit();
   }
+
+  useEffect(() => {
+    colorsRef.current = getColors(data.carsCount);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     canvasInit();

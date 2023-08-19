@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const CarsContext = createContext({});
 
@@ -9,24 +9,25 @@ export function useCarsContext() {
 }
 
 export default function CarsProvider({ children }) {
-  const [cars, setCars] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const [chartData, setChartData] = useState(null);
   const [rankingData, setRankingData] = useState(null);
+
+  const [searchContainer, setSearchContainer] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("5000");
   const [minYear, setMinYear] = useState("2005");
   const [maxYear, setMaxYear] = useState("");
   const [region, setRegion] = useState("7");
+
   const [dropDownOpen, setDropDownOpen] = useState(false);
-  const [searchContainer, setSearchContainer] = useState(null);
 
   return (
     <CarsContext.Provider
       value={{
-        cars,
-        setCars,
         isLoading,
         setIsLoading,
         chartData,

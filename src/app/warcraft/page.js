@@ -12,8 +12,14 @@ import { useCarsContext } from "@/components/CarsProvider";
 import { footerParams } from "@/lib/params";
 
 export default function Warcraft() {
-  const { rankingData, setRankingData, isLoading, setIsLoading } =
-    useCarsContext();
+  const {
+    rankingData,
+    setRankingData,
+    errorMessage,
+    setErrorMessage,
+    isLoading,
+    setIsLoading,
+  } = useCarsContext();
 
   const pathname = usePathname();
   const { cars, warcraft } = footerParams;
@@ -22,11 +28,21 @@ export default function Warcraft() {
     async function searchData() {
       setIsLoading(true);
 
-      const response = await fetch(`/api${pathname}`);
-      const data = await response.json();
+      try {
+        const response = await fetch(`/api${pathname}`);
 
-      setRankingData(data);
-      setIsLoading(false);
+        const data = await response.json();
+
+        if (data.error) {
+          setErrorMessage(data.error);
+        } else {
+          setRankingData(data);
+        }
+      } catch (error) {
+        setErrorMessage(error.message);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
     searchData();
@@ -41,7 +57,7 @@ export default function Warcraft() {
           {rankingData && rankingData.tierData.length > 0 ? (
             <WarcraftCanvas data={rankingData} />
           ) : (
-            <EmptyContent />
+            <EmptyContent errorMessage={errorMessage} />
           )}
         </div>
       )}

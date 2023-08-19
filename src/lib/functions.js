@@ -32,8 +32,3 @@ export const drawRect = (context, x, y, width, height, color = "blue") => {
   context.rect(x, y, width, height);
   context.fill();
 };
-
-export function getRandomColor() {
-  const randomNumber = () => (Math.random() * 205 + 50).toFixed();
-  return `rgba(${randomNumber()},${randomNumber()},${randomNumber()},0.7)`;
-}
