@@ -61,3 +61,18 @@ export const footerParams = {
     path: "/warcraft",
   },
 };
+
+const playerColors = {
+  hunter: "#aad372",
+  warlock: "#9382c9",
+  warrior: "#c69b6d",
+  mage: "#68ccef",
+  rogue: "#fff468",
+  priest: "#fff",
+  deathknight: "#c41e3b",
+  paladin: "#f48cba",
+  shaman: "#2359ff",
+  monk: "#008467",
+  druid: "#ff7c0a",
+  demonhunter: "#a330c9",
+};

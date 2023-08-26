@@ -53,9 +53,13 @@ export default function Warcraft() {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="flex justify-center items-start flex-1">
-          {rankingData && rankingData.tierData.length > 0 ? (
-            <WarcraftCanvas data={rankingData} />
+        <div className="flex flex-col justify-center items-start flex-1">
+          {rankingData ? (
+            <>
+              <WarcraftCanvas data={rankingData.tankData} />
+              <WarcraftCanvas data={rankingData.healerData} />
+              <WarcraftCanvas data={rankingData.dpsData} />
+            </>
           ) : (
             <EmptyContent errorMessage={errorMessage} />
           )}

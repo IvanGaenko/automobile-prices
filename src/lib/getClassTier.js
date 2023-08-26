@@ -42,13 +42,19 @@ export default async function getClassTier() {
   const dungeonsDivs = await page.waitForSelector(carouselSelector);
   const dungeons = await dungeonsDivs.evaluate((element) => {
     return Array.from(element.querySelectorAll("div.item")).map((dungeon) => {
-      const name = dungeon.querySelector("label").innerHTML.trim();
+      const name = dungeon
+        .querySelector("label")
+        .innerHTML.trim()
+        .replace("<br>", "");
       const ajax = dungeon.querySelector("div").getAttribute("ajax");
       return { name, ajax };
     });
   });
 
-  const tierList = {};
+  const teamRating = {};
+  const tankRating = {};
+  const healerRating = {};
+  const dpsRating = {};
 
   for (let i = 0; i < dungeons.length; i++) {
     const currentDungeon = dungeons[i];
@@ -69,49 +75,123 @@ export default async function getClassTier() {
     const table = await page.waitForSelector(tableSelector);
 
     // get content
-    const content = await table.evaluate((element) => {
-      const players = {};
+    const [tanks, healers, dps, teams] = await table.evaluate((element) => {
+      const teams = [];
+      const tanks = {};
+      const healers = {};
+      const dps = {};
 
-      Array.from(element.querySelectorAll("td > span")).map((line) => {
-        const name = line.className.split("_")[1];
+      function convertToNameCountArray(players) {
+        return Object.entries(players)
+          .map((player) => {
+            return {
+              name: player[0],
+              count: player[1],
+            };
+          })
+          .sort((a, b) => (a.count < b.count ? 1 : -1));
+      }
 
-        if (players[name]) {
-          players[name] = players[name] + 1;
-        } else {
-          players[name] = 1;
+      Array.from(element.querySelectorAll("tr > td:nth-child(4)")).forEach(
+        (group) => {
+          const team = {
+            tank: "",
+            healer: "",
+            dps: [],
+          };
+          Array.from(group.querySelectorAll("span")).forEach((line) => {
+            const isTank = line.querySelector("span.fa.fa-shield") !== null;
+            const isHealer = line.querySelector("span.fa.fa-plus") !== null;
+            const name = line.className.split("_")[1];
+
+            if (name) {
+              if (isTank) {
+                team.tank = name;
+
+                if (tanks[name]) {
+                  tanks[name] = tanks[name] + 1;
+                } else {
+                  tanks[name] = 1;
+                }
+              }
+              if (isHealer) {
+                team.healer = name;
+
+                if (healers[name]) {
+                  healers[name] = healers[name] + 1;
+                } else {
+                  healers[name] = 1;
+                }
+              }
+              if (!isTank && !isHealer) {
+                team.dps.push(name);
+
+                if (dps[name]) {
+                  dps[name] = dps[name] + 1;
+                } else {
+                  dps[name] = 1;
+                }
+              }
+            }
+          });
+
+          team.dps.sort((a, b) => (a > b ? 1 : -1));
+          teams.push(team);
         }
-      });
+      );
 
-      return Object.entries(players).map((player) => {
-        return {
-          name: player[0],
-          count: player[1],
-        };
-      });
+      return [
+        convertToNameCountArray(tanks),
+        convertToNameCountArray(healers),
+        convertToNameCountArray(dps),
+        teams,
+      ];
     });
 
-    for (let i = 0; i < content.length; i++) {
-      const currentClass = content[i];
-      const currentClassName = currentClass.name;
-      const currentClassCount = currentClass.count;
-      const currentDungeonName = currentDungeon.name;
+    function parseTierData(rankingList, players, dungeon) {
+      for (let i = 0; i < players.length; i++) {
+        const player = players[i];
+        const playerName = player.name;
+        const playerCount = player.count;
+        const dungeonName = dungeon.name;
 
-      if (tierList[currentClassName]) {
-        if (tierList[currentClassName][0][currentDungeonName]) {
-          tierList[currentClassName][0][currentDungeonName] =
-            tierList[currentClassName][0][currentDungeonName] +
-            currentClassCount;
-          tierList[currentClassName][1] =
-            tierList[currentClassName][1] + currentClassCount;
+        if (rankingList[playerName]) {
+          if (rankingList[playerName][0][dungeonName]) {
+            rankingList[playerName][0][dungeonName] =
+              rankingList[playerName][0][dungeonName] + playerCount;
+            rankingList[playerName][1] =
+              rankingList[playerName][1] + playerCount;
+          } else {
+            rankingList[playerName][0][dungeonName] = playerCount;
+            rankingList[playerName][1] =
+              rankingList[playerName][1] + playerCount;
+          }
         } else {
-          tierList[currentClassName][0][currentDungeonName] = currentClassCount;
-          tierList[currentClassName][1] =
-            tierList[currentClassName][1] + currentClassCount;
+          const newDungeonTier = {};
+          newDungeonTier[dungeonName] = playerCount;
+          rankingList[playerName] = [newDungeonTier, playerCount];
         }
+      }
+    }
+
+    parseTierData(tankRating, tanks, currentDungeon);
+    parseTierData(healerRating, healers, currentDungeon);
+    parseTierData(dpsRating, dps, currentDungeon);
+
+    for (let k = 0; k < teams.length; k++) {
+      const curentTeam = teams[k];
+
+      const teamIndex = `${curentTeam.tank ? curentTeam.tank : ""}_${
+        curentTeam.healer ? curentTeam.healer : ""
+      }_${curentTeam.dps[0] ? curentTeam.dps[0] : ""}_${
+        curentTeam.dps[0] ? curentTeam.dps[1] : ""
+      }_${curentTeam.dps[0] ? curentTeam.dps[2] : ""}`;
+
+      if (teamRating[teamIndex]) {
+        teamRating[teamIndex][1] = teamRating[teamIndex][1] + 1;
       } else {
-        const newDungeonTier = {};
-        newDungeonTier[currentDungeonName] = currentClassCount;
-        tierList[currentClassName] = [newDungeonTier, currentClassCount];
+        const newTeam = [curentTeam, 1];
+        teamRating[teamIndex] = newTeam;
       }
     }
 
@@ -123,7 +203,7 @@ export default async function getClassTier() {
 
   await browser.close();
 
-  return tierList;
+  return { teamRating, tankRating, healerRating, dpsRating };
 }
 
 async function getWeaponName(browser) {
