@@ -79,7 +79,9 @@ export default function Cars() {
         </div>
       )}
       <Footer data={cars} altData={warcraft} /> */}
-      <PlayerChart data={mockCarsData} />
+      <div className="w-full flex justify-center">
+        <PlayerChart data={mockCarsData} />
+      </div>
     </section>
   );
 }
