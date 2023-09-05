@@ -66,9 +66,61 @@ const mockCarsData = {
         },
       ],
     },
+    {
+      year: 2008,
+      cars: [
+        {
+          name: "ИЖ 27175",
+          year: 2006,
+          price: [1000, 1000],
+          race: [300, 300],
+          count: 1,
+        },
+        {
+          name: "ЗАЗ 1103 Славута",
+          year: 2006,
+          price: [1400, 1400],
+          race: [240, 240],
+          count: 1,
+        },
+        {
+          name: "ВАЗ / Lada 1117 Калина",
+          year: 2006,
+          price: [1700, 1700],
+          race: [540, 540],
+          count: 1,
+        },
+      ],
+    },
+    {
+      year: 2009,
+      cars: [
+        {
+          name: "ИЖ 27175",
+          year: 2006,
+          price: [1000, 1000],
+          race: [300, 300],
+          count: 1,
+        },
+        {
+          name: "ЗАЗ 1103 Славута",
+          year: 2006,
+          price: [1400, 1400],
+          race: [240, 240],
+          count: 1,
+        },
+        {
+          name: "ВАЗ / Lada 1117 Калина",
+          year: 2006,
+          price: [1700, 1700],
+          race: [540, 540],
+          count: 1,
+        },
+      ],
+    },
   ],
   maxPrice: 2400,
-  carsCount: 8,
+  carsCount: 14,
 };
 
 export default mockCarsData;

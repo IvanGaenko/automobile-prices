@@ -1,7 +1,11 @@
-import { useRef } from "react";
+"use client";
+
+import { useRef, useEffect } from "react";
 import { canvasParams } from "@/lib/params";
 
-export default function PlayerChart({ data }) {
+import CoordinateSystem from "./CoordinateSystem";
+
+export default function Chart({ data }) {
   console.log("data", data);
   const {
     lineHeight,
@@ -16,7 +20,9 @@ export default function PlayerChart({ data }) {
       graphOffsetTop * 2 +
       (data.carData.length - 1) * sectionGap
   );
+
   const grapshWidthRef = useRef(window.innerWidth * 0.9);
+
   const graphInnerWidthRef = useRef(
     grapshWidthRef.current - graphOffsetLeft * 2
   );
@@ -26,9 +32,8 @@ export default function PlayerChart({ data }) {
 
   const startPoint = useRef(graphOffsetTop);
   const carPoint = useRef(0);
-
-  console.log("graphHeightRef", graphHeightRef);
-  console.log("(data.carData.length - 1", sectionGap * data.carData.length);
+  const xKoeff = useRef(graphInnerWidthRef.current / data.maxPrice);
+  console.log("graphInnerWidth", graphInnerWidthRef.current);
   return (
     <svg
       version="1.1"
@@ -36,27 +41,13 @@ export default function PlayerChart({ data }) {
       width={grapshWidthRef.current}
       height={graphHeightRef.current}
     >
-      <rect
-        rx="0"
-        ry="0"
-        fill="#141414"
-        x="0"
-        y="0"
-        width="100%"
-        height={graphHeightRef.current}
-      ></rect>
-      <polyline
-        points={`${graphOffsetLeft},${graphOffsetTop} 
-        ${graphInnerWidthRef.current + graphOffsetLeft},${graphOffsetTop} 
-        ${graphInnerWidthRef.current + graphOffsetLeft},${
-          graphInnerHeightRef.current + graphOffsetTop
-        }
-        ${graphOffsetLeft},${graphInnerHeightRef.current + graphOffsetTop}
-        ${graphOffsetLeft},${graphOffsetTop}
-        `}
-        fill="none"
-        stroke="white"
-        strokeWidth="3"
+      <CoordinateSystem
+        data={data.carData}
+        graphHeight={graphHeightRef.current}
+        graphInnerWidth={graphInnerWidthRef.current}
+        graphInnerHeight={graphInnerHeightRef.current}
+        maxValue={data.maxPrice}
+        koef={xKoeff.current}
       />
 
       {data.carData.map((car, i) => {
@@ -64,20 +55,15 @@ export default function PlayerChart({ data }) {
         startPoint.current = startPoint.current + yearSection;
         const xKoeff = graphInnerWidthRef.current / data.maxPrice;
         return (
-          <g
-            key={car.year}
-            className="fill-white"
-            // style={{ backgroundColor: "red" }}
-            // x={graphOffsetLeft}
-          >
-            <line
+          <g key={car.year} className="fill-white">
+            {/* <line
               x1={graphOffsetLeft}
               y1={startPoint.current - yearSection - 3}
               x2={graphInnerWidthRef.current + graphOffsetLeft}
               y2={startPoint.current - yearSection - 3}
               stroke="white"
               strokeWidth="3"
-            ></line>
+            ></line> */}
 
             <text
               x="0"
@@ -101,8 +87,8 @@ export default function PlayerChart({ data }) {
                   <rect
                     x={graphOffsetLeft}
                     y={carPoint.current - lineHeight}
-                    fill="red"
-                    // fill="transparent"
+                    // fill="red"
+                    fill="transparent"
                     width={graphInnerWidthRef.current}
                     height={lineHeight}
                     style={{ opacity: 0.5, zIndex: 1 }}

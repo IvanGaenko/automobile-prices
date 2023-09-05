@@ -11,7 +11,7 @@ import Canvas from "@/components/Canvas";
 import Loading from "@/components/Loading";
 import EmptyContent from "@/components/EmptyContent";
 import Footer from "@/components/Footer";
-import PlayerChart from "@/components/PlayerChart";
+import Chart from "@/components/Chart";
 import mockCarsData from "@/lib/mockCars";
 
 export default function Cars() {
@@ -62,6 +62,7 @@ export default function Cars() {
     }
 
     // searchData();
+    // setChartData(mockCarsData);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -80,7 +81,7 @@ export default function Cars() {
       )}
       <Footer data={cars} altData={warcraft} /> */}
       <div className="w-full flex justify-center">
-        <PlayerChart data={mockCarsData} />
+        <Chart data={mockCarsData} />
       </div>
     </section>
   );
